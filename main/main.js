@@ -57,7 +57,17 @@ function printSingleItem(item, obj) {
     // toFixed() 方法可把 Number 四舍五入为指定小数位数的数字
     let goodsPrice = itemDetailInfo[0]["price"].toFixed(2);
     let amount=obj[item.split("-")[0]];
-    let everyGoodsSum =(goodsPrice * amount).toFixed(2);
+    //后来发现问题，这个price是打折之后的。
+    let discoutInformation = database.loadPromotions();
+    var newAmout=amount;
+    if(discoutInformation[0]["barcodes"].indexOf(item)!=-1){
+        newAmout=amount>2?amount-1:amount;
+    }
+
+    let everyGoodsSum =(goodsPrice * newAmout).toFixed(2);
+
+
+
     // console.log(goodsPrice);
     // console.log(amount);
     // console.log(everyGoodsSum);
