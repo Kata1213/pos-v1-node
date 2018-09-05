@@ -34,21 +34,32 @@ function countElementNumber(item,obj){
 }
 
 
+
+
 function printElements(obj) {
     var resultStr=[];
        resultStr.push("***<没钱赚商店>购物清单***\n");
     let sum = 0;
+    let freeGoodsObj = [];
     for(let item in obj){
-        resultStr.push(printSingleItem(item,obj));
+        resultStr.push(printSingleItem(item,obj,freeGoodsObj));
         sum += calTotalSum(item,obj);
     }
-    // var resultStrrr=[].concat(...resultStr); //不知道为什么，但是就是不行。
+    resultStr.push("---------------------")
+    resultStr.push(`----------------------\n挥泪赠送商品:\n`);
+    for(let x in freeGoodsObj){
+        var itemDetailInfo =freeGoodsPriter(x);
+        resultStr.push(`名称：${itemDetailInfo[0]["name"]}，数量：1${itemDetailInfo[0]["unit"]}\n`);
+    }
+    resultStr.push("---------------------")
+
+        // var resultStrrr=[].concat(...resultStr); //不知道为什么，但是就是不行。
     var rrr=resultStr.join("");
     console.log(rrr);
 }
 
 
-function printSingleItem(item, obj) {
+function printSingleItem(item, obj,freeGoodsObj) {
     let allItems = database.loadAllItems();
     let itemDetailInfo =allItems.filter(function (subitem) {
         return subitem["barcode"] == item;
@@ -60,8 +71,10 @@ function printSingleItem(item, obj) {
     //后来发现问题，这个price是打折之后的。
     let discoutInformation = database.loadPromotions();
     var newAmout=amount;
+    var freeItem;
     if(discoutInformation[0]["barcodes"].indexOf(item)!=-1){
         newAmout=amount>2?amount-1:amount;
+        freeGoodsObj[item]=1;
     }
 
     let everyGoodsSum =(goodsPrice * newAmout).toFixed(2);
@@ -73,6 +86,14 @@ function printSingleItem(item, obj) {
     // console.log(everyGoodsSum);
     let resultSubStr =`名称：${itemDetailInfo[0]["name"]}，数量：${obj[item]}${itemDetailInfo[0]["unit"]}，单价：${goodsPrice}(元)，小计：${everyGoodsSum}(元)\n`;
     return resultSubStr;
+}
+
+function freeGoodsPriter(x) {
+    let allItems = database.loadAllItems();
+    let itemDetailInfo =allItems.filter(function (subitem) {
+        return subitem["barcode"] === x;
+    })
+    return itemDetailInfo;
 }
 
 function calTotalSum(item, obj) {
