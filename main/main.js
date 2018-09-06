@@ -48,7 +48,7 @@ function printElements(obj) {
         final_sum += calTotalSum(item,obj);
         oldSum+=old_sum(item,obj);
     }
-    resultStr.push(`----------------------\n挥泪赠送商品:\n`);
+    resultStr.push(`----------------------\n挥泪赠送商品：\n`);
     for(let x in freeGoodsObj){
         var itemDetailInfo =freeGoodsPriter(x);
         resultStr.push(`名称：${itemDetailInfo[0]["name"]}，数量：1${itemDetailInfo[0]["unit"]}\n`);
